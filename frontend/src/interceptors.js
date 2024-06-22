@@ -6,9 +6,20 @@ const useInterceptor = () => {
     baseURL: baseURL, 
     timeout: 10000 
   });
+  
+  instance.interceptors.request.use((config) => {
+    // Modify request config here, e.g., add headers
+    return config;
+  }, (error) => {
+    return Promise.reject(error);
+  });
 
-  instance.defaults.headers.common["Content-Type"] = "application/json";
-  instance.defaults.headers.common["Accept"] = "application/json";
+  instance.interceptors.response.use((response) => {
+    // Modify response data here, if needed
+    return response;
+  }, (error) => {
+    return Promise.reject(error);
+  });
 
   return instance;
 };

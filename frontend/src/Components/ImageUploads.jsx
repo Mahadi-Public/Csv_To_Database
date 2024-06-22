@@ -8,24 +8,29 @@ import SuccessToast from '../../utilits/Toast';
 
 const ImageUploads = () => {
 
-    const [formData, setFormData] = useState(null);
+    const [formData, setFormData] = useState();
     const [showToast, setShowToast] = useState(false);
     const api = useApiHelper();
 
 
     const handleFormdData = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files[0]; 
         const newFormData = new FormData();
-        newFormData.append('file', file);
-        setFormData(newFormData);
+        newFormData.append('file', file); 
+        setFormData(newFormData); 
     };
-
-
-    const handleSubmit =  (e) => {
+    
+    
+    const handleSubmit = async (e) => {
         e.preventDefault();
     
+        if (!formData) {
+            console.error('No file selected 0000');
+            return;
+        }
+    
         try {
-            const response = api.fileUploads(formData);
+            const response = await api.fileUploads(formData);
             console.log('Upload Response:', response.data);
             setShowToast(!showToast);
         } catch (error) {
@@ -33,16 +38,15 @@ const ImageUploads = () => {
         }
     };
     
-    
     return (
         <Container className='d-flex justify-content-center align-items-center mt-5 pt-5'>
             <Card className='p-5 bg-body-tertiary border-0 shadow rounded-4' style={{ width: '30rem' }}>
                 <Card.Body className="d-flex flex-column align-items-center">
                     <Card.Title className='text-center text-uppercase mb-3'>Upload File</Card.Title>
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit} encType="multipart/form-data">
                         <Form.Group controlId="formFile" className="mb-3 mt-3">
                             <Form.Label className='text-uppercase'>Only CSV files:</Form.Label>
-                            <Form.Control type="file" onChange={handleFormdData} required/>
+                            <Form.Control type="file" name='file' onChange={handleFormdData} required/>
                         </Form.Group>
                         <Button type="submit" className='mt-2' variant="success">Submit</Button>
                     </Form>
